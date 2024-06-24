@@ -5,6 +5,7 @@ namespace Saade\FilamentFullCalendar;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Support\Facades\Blade;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -23,6 +24,10 @@ class FilamentFullCalendarServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        Blade::directive('processJsConfig', static function ($expression) {
+            return "<?php echo \Saade\FilamentFullCalendar\Types\Js::processConfig($expression); ?>";
+        });
+
         FilamentAsset::register(
             $this->getAssets(),
             $this->getAssetPackageName(),
