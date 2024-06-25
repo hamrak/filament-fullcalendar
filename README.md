@@ -245,6 +245,49 @@ class CalendarWidget extends FullCalendarWidget
 }
 ```
 
+## Possibility to insert a JS function in the config
+
+```php
+<?php
+namespace App\Filament\Widgets;
+
+use Saade\FilamentFullCalendar\Types\Js;
+use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
+use App\Models\Event;
+
+class CalendarWidget extends FullCalendarWidget
+{
+    public Model | string | null $model = Event::class;
+
+    public function config(): array
+    {
+        return [
+            'firstDay' => 1,
+            'headerToolbar' => [
+                'left' => 'expandAll,collapseAll resourceTimelineWeek,resourceTimelineMonth,listWeek',
+                'center' => 'title',
+                'right' => 'prev,next today',
+            ],
+            'customButtons' => [
+                'expandAll' => [
+                    'text' => 'Unhide All',
+                    'icon' => 'fc-icon fc-icon-plus-square',
+                    'click' => new Js('function() { document.querySelectorAll(".fc-datagrid-expander .fc-icon-plus-square").forEach(function(el) { el.click(); }); }'),
+                ],
+                'collapseAll' => [
+                    'text' => 'Hide All',
+                    'icon' => 'fc-icon fc-icon-minus-square',
+                    'click' => new Js('function() { document.querySelectorAll(".fc-datagrid-expander .fc-icon-minus-square").forEach(function(el) { el.click(); }); }'),
+                ],
+            ],
+        ];
+    }
+}
+```
+
+
+## Available methods
+
 ## Available methods
 
 ### schedulerLicenseKey(`string` | `null` $licenseKey)

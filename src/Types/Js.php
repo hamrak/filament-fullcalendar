@@ -50,10 +50,19 @@ class Js
 
         $json = json_encode($processedArray, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $json = preg_replace('/\s+/', ' ', $json);
-        $json = str_replace('"', "'", $json);
 
-        return preg_replace_callback('/"(\w+)"\s*:\s*"(function\(.+?\)|fn\(.+?\)=>.+?)"/', static function ($matches) {
-            return "\"{$matches[1]}\": {$matches[2]}";
+        // Use a regex pattern to identify JavaScript functions and remove the quotes around them
+        $pattern = '/"(\w+)"\s*:\s*"(function\(.*?\}|fn\(.*?\})"/';
+
+        // Use preg_replace_callback to handle complex replacements
+        $json = preg_replace_callback($pattern, function ($matches) {
+            // $matches[2] contains the JavaScript function with escaped single quotes
+            $functionContent = str_replace("\\\"", '"', $matches[2]);
+
+            // Return the key and the cleaned function content
+            return "\"{$matches[1]}\": {$functionContent}";
         }, $json);
+
+        return str_replace('"', "'", $json);
     }
 }
