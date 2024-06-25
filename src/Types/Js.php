@@ -20,7 +20,7 @@ class Js
 
     public function __toString(): string
     {
-        return $this->js;
+        return '|_JS_BEGIN_|'.$this->js.'|_JS_END_|';
     }
 
     protected static function prepareProcessConfig(?array $array): array
@@ -51,13 +51,23 @@ class Js
         $json = json_encode($processedArray, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $json = preg_replace('/\s+/', ' ', $json);
 
-        // Use a regex pattern to identify JavaScript functions and remove the quotes around them
-        $pattern = '/"(\w+)"\s*:\s*"(function\(.*?\}|fn\(.*?\})"/';
+        $json = str_replace(["\\r", "\\n", "\\t"], '', $json);
 
-        // Use preg_replace_callback to handle complex replacements
+        // Use a regex pattern to identify the custom markers and the JavaScript function content
+        $pattern = '/"(\w+)"\s*:\s*"\|_JS_BEGIN_\|(.*?)\|_JS_END_\|"/';
+
+        // Use preg_replace_callback to handle the replacement
         $json = preg_replace_callback($pattern, function ($matches) {
-            // $matches[2] contains the JavaScript function with escaped single quotes
-            $functionContent = str_replace("\\\"", '"', $matches[2]);
+            // $matches[2] contains the JavaScript function content between the markers
+            $functionContent = $matches[2];
+
+            // Remove single-line comments
+            $functionContent = preg_replace('/\/\/[^\n]*\n?/', '', $functionContent);
+
+            // Remove multi-line comments
+            $functionContent = preg_replace('/\/\*.*?\*\//s', '', $functionContent);
+
+            $functionContent = str_replace('\\"', "'", $functionContent);
 
             // Return the key and the cleaned function content
             return "\"{$matches[1]}\": {$functionContent}";
