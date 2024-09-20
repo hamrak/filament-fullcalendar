@@ -24,11 +24,8 @@
                 eventWillUnmount: {!! htmlspecialchars($this->eventWillUnmount(), ENT_COMPAT) !!},
                 resourceLabelClassNames: {!! htmlspecialchars($this->resourceLabelClassNames(), ENT_COMPAT) !!},
                 resourceLabelContent: {!! htmlspecialchars($this->resourceLabelContent(), ENT_COMPAT) !!},
-                resourceLabelDidMount: {!! htmlspecialchars($this->resourceLabelDidMount(), ENT_COMPAT) !!},
                 resourceLabelWillUnmount: {!! htmlspecialchars($this->resourceLabelWillUnmount(), ENT_COMPAT) !!},
-                resourceLaneClassNames: {!! htmlspecialchars($this->resourceLaneClassNames(), ENT_COMPAT) !!},
                 resourceLaneContent: {!! htmlspecialchars($this->resourceLaneContent(), ENT_COMPAT) !!},
-                resourceLaneDidMount: {!! htmlspecialchars($this->resourceLaneDidMount(), ENT_COMPAT) !!},
                 resourceLaneWillUnmount: {!! htmlspecialchars($this->resourceLaneWillUnmount(), ENT_COMPAT) !!},
                 config: @processJsConfig($this->getConfig())
             })">
